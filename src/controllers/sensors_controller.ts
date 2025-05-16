@@ -34,7 +34,11 @@ export const SensorsController: Controller = {
       })
       .parse(ctx.params);
 
-    const sensor = await SensorsRepository.update(id, ctx.request.body as any);
+    const validatedUpdateSensor = z
+      .object({ name: z.string() })
+      .parse(ctx.request.body);
+
+    const sensor = await SensorsRepository.update(id, validatedUpdateSensor);
 
     ctx.body = {
       ...sensor,
