@@ -23,7 +23,14 @@ export const SensorsController: Controller = {
 
     ctx.body = {
       ...sensor,
-      values,
+      values: values.map((value) => {
+        return [
+          value.timestamp,
+          value.values.reduce((agg, curr) => {
+            return agg + curr;
+          }, 0) / value.values.length,
+        ];
+      }),
     };
   },
 
