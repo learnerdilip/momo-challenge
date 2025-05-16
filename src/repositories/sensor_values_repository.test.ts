@@ -41,4 +41,19 @@ describe("SensorValuesRepository", () => {
 
     assert.deepEqual(list, [{ id: 2, ...entries[1] }]);
   });
+
+  it("it should delete the sensor value for a givem id", async () => {
+    const entry = {
+      sensor_id: 1,
+      timestamp: 123456789,
+      values: [1, 2, 3],
+    };
+
+    await SensorValuesRepository.create(entry);
+    await SensorValuesRepository.delete(entry.sensor_id);
+
+    const currentEntries = await SensorValuesRepository.list();
+
+    assert.deepEqual(currentEntries, []);
+  });
 });

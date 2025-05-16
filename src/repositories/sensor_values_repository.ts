@@ -45,5 +45,9 @@ export const SensorValuesRepository: Repository<SensorValue> = {
     return value;
   },
 
-  async delete(id) {},
+  async delete(id) {
+    database.sensorValues = database.sensorValues.filter(
+      (sensor) => sensor.id !== id
+    );
+  },
 };
