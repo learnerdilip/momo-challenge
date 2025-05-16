@@ -10,28 +10,37 @@ export const SensorsController: Controller = {
   },
 
   async read(ctx) {
-    const { id } = z
-      .object({
-        id: z.coerce.number().nonnegative(),
-      })
-      .parse(ctx.params);
+    try {
+      const { success, data } = z
+        .object({
+          id: z.coerce.number().nonnegative(),
+        })
+        .safeParse(ctx.params);
 
-    const sensor = await SensorsRepository.read(id);
-    const values = await SensorValuesRepository.list(
-      (value) => value.sensor_id === id
-    );
+      if (!success) {
+        throw new Error("params are invalid");
+      }
 
-    ctx.body = {
-      ...sensor,
-      values: values.map((value) => {
-        return [
-          value.timestamp,
-          value.values.reduce((agg, curr) => {
-            return agg + curr;
-          }, 0) / value.values.length,
-        ];
-      }),
-    };
+      const sensor = await SensorsRepository.read(data.id);
+      const values = await SensorValuesRepository.list(
+        (value) => value.sensor_id === data.id
+      );
+
+      ctx.body = {
+        ...sensor,
+        values: values.map((value) => {
+          return [
+            value.timestamp,
+            value.values.reduce((agg, curr) => {
+              return agg + curr;
+            }, 0) / value.values.length,
+          ];
+        }),
+      };
+    } catch (err: any) {
+      ctx.status = 400;
+      ctx.body = { error: err.message };
+    }
   },
 
   async update(ctx) {

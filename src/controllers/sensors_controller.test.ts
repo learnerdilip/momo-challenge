@@ -34,18 +34,8 @@ describe("SensorsController", () => {
       id: 1,
       name: "Sensor Name",
       values: [
-        {
-          id: 1,
-          sensor_id: 1,
-          timestamp: 123456789,
-          values: [1, 2, 3],
-        },
-        {
-          id: 2,
-          timestamp: 123456790,
-          sensor_id: 1,
-          values: [5, 4, 3],
-        },
+        [123456789, 2],
+        [123456790, 4],
       ],
     });
   });
