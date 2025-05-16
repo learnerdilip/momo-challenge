@@ -1,15 +1,14 @@
 import { database } from "../database";
 import { autoIncrement } from "../utils/identifiers";
-import { Repository } from "./_repository";
+import { WithoutIdRepository } from "./_repository";
 
 export type SensorValue = {
-  id: number;
   timestamp: number;
   sensor_id: number;
   values: number[];
 };
 
-export const SensorValuesRepository: Repository<SensorValue> = {
+export const SensorValuesRepository: WithoutIdRepository<SensorValue> = {
   async list(filter) {
     if (filter) {
       return database.sensorValues.filter(filter);
@@ -18,9 +17,7 @@ export const SensorValuesRepository: Repository<SensorValue> = {
   },
 
   async create(data) {
-    const id = autoIncrement(database.sensorValues.map((value) => value.id));
     const value: SensorValue = {
-      id,
       ...data,
     };
     database.sensorValues.push(value);
@@ -28,7 +25,7 @@ export const SensorValuesRepository: Repository<SensorValue> = {
   },
 
   async read(id) {
-    const value = database.sensorValues.find((value) => value.id === id);
+    const value = database.sensorValues.find((value) => value.timestamp === id);
     if (!value) {
       throw new Error(`Failed to find SensorValue with id '${id}'`);
     }
@@ -36,7 +33,9 @@ export const SensorValuesRepository: Repository<SensorValue> = {
   },
 
   async update(id, data) {
-    const index = database.sensorValues.findIndex((value) => value.id === id);
+    const index = database.sensorValues.findIndex(
+      (value) => value.timestamp === id
+    );
     if (!index) {
       throw new Error(`Failed to find SensorValue with id '${id}'`);
     }

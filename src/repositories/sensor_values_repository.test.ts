@@ -17,7 +17,7 @@ describe("SensorValuesRepository", () => {
 
     const result = await SensorValuesRepository.create(entry);
 
-    assert.deepEqual(result, { id: 1, ...entry });
+    assert.deepEqual(result, { ...entry });
   });
 
   it("should be able to list with a filter", async () => {
@@ -39,6 +39,6 @@ describe("SensorValuesRepository", () => {
       (value) => value.sensor_id === 2
     );
 
-    assert.deepEqual(list, [{ id: 2, ...entries[1] }]);
+    assert.deepEqual(list, [{ ...entries[1] }]);
   });
 });
